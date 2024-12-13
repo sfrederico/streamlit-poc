@@ -9,23 +9,27 @@ cookies_controller = stc.CookieController()
 
 
 # Helper functions
-def display_error(message):
+def display_error(message: str) -> None:
+    """Display an error message in the sidebar."""
     st.sidebar.error(message)
 
 
-def display_success(message):
+def display_success(message: str) -> None:
+    """Display a success message in the sidebar."""
     st.sidebar.success(message)
 
 
-def set_user_cookie(user):
-    current_time = datetime.datetime.now()
+def set_user_cookie(user: dict) -> None:
+    """Set the user cookie with the given user data."""
+    current_time = datetime.datetime.now(datetime.timezone.utc)
     expires_in_seconds = int(user["expiresIn"])
     expires = current_time + datetime.timedelta(seconds=expires_in_seconds)
     cookies_controller.set("user", user, expires=expires)
 
 
 # Business logic
-def create_user(username, password):
+def create_user(username: str, password: str) -> None:
+    """Create a new user account."""
     if not username or not password:
         display_error("Username and password are required")
         return
@@ -37,7 +41,8 @@ def create_user(username, password):
         st.sidebar.success(f"Account created for {username}")
 
 
-def login(username, password):
+def login(username: str, password: str) -> None:
+    """Authenticate a user."""
     if not username or not password:
         display_error("Username and password are required")
         return
@@ -57,7 +62,8 @@ def login(username, password):
         st.rerun()
 
 
-def logout():
+def logout() -> None:
+    """Logout the user."""
     if "user" in st.session_state:
         del st.session_state["user"]
         cookies_controller.remove("user")
@@ -65,7 +71,8 @@ def logout():
 
 
 # UI
-def sidebar():
+def sidebar() -> None:
+    """Display the sidebar."""
     if "user" in st.session_state:
         st.sidebar.button("Logout", on_click=logout)
     else:
